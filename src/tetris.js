@@ -1,8 +1,6 @@
 // var {compose}=require('ramda')
 import {compose} from 'ramda'
 
-
-
 const getScreen = id => {
     let canvas = document.getElementById(id)
     let context = canvas.getContext('2d')
@@ -14,12 +12,14 @@ const scale = ({context, canvas }) => {
     return {context, canvas}
 }
 
-const clear = color => screen => {
+const fillScreen = color => screen => {
     let {context, canvas} = screen
     context.fillStyle = color
     context.fillRect(0,0,canvas.width, canvas.height)
     return screen
 }
+
+const clear= fillScreen('#000')
 
 const drawPiece = color => player => screen  => {
     let {context, canvas} = screen
@@ -44,6 +44,14 @@ const player = {
 }
   
 var screen = getScreen('screen')
-var init = compose(drawPiece('red')(player), clear('#000'), scale)
+var init = compose(drawPiece('red')(player), clear, scale)
+var draw = compose(drawPiece('red')(player), clear)
+
+var update = ()=>{
+    draw(screen)
+    //player.position.y++
+    requestAnimationFrame(update)
+}
 
 init(screen)
+update()
