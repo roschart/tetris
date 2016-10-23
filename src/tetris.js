@@ -21,8 +21,9 @@ const clear = color => screen => {
     return screen
 }
 
-const drawPiece = color => piece => offset => screen  => {
+const drawPiece = color => player => screen  => {
     let {context, canvas} = screen
+    let {piece, position: offset} = player
       piece.forEach((row, y)=>{
         row.forEach((value,x)=>{
             if(value!==0){
@@ -36,8 +37,13 @@ const matrix = [
     [0,0,0],
     [1,1,1],
     [0,1,0]] 
+
+const player = {
+    position: {x: 0, y: 0},
+    piece: matrix
+}
   
 var screen = getScreen('screen')
-var init = compose(drawPiece('red')(matrix)({x:0,y:0}) , clear('#000'), scale)
+var init = compose(drawPiece('red')(player), clear('#000'), scale)
 
 init(screen)
