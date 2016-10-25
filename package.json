@@ -4,6 +4,7 @@
   "description": "",
   "main": "tetris.js",
   "dependencies": {
+    "immutable": "^3.8.1",
     "ramda": "^0.22.1"
   },
   "devDependencies": {

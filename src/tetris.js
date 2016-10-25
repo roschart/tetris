@@ -1,5 +1,5 @@
-// var {compose}=require('ramda')
 import {compose} from 'ramda'
+import Immutable from 'immutable'
 
 const getScreen = id => {
     let canvas = document.getElementById(id)
@@ -42,6 +42,14 @@ const player = {
     position: {x: 0, y: 0},
     piece: matrix
 }
+
+const game = {
+ init:() => Immutable.fromJS(player),
+ update: state => action => {
+     //first verision any acction move down
+     return state.updateIn(['position', 'y'], v=> v + 1)
+ }   
+}
   
 var screen = getScreen('screen')
 var init = compose(drawPiece('red')(player), clear, scale)
@@ -55,3 +63,8 @@ var update = ()=>{
 
 init(screen)
 update()
+
+//test inmutable state
+var  state =  game.init()
+var nextState= game.update(state)('algo') 
+console.log(nextState.toJS())
