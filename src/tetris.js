@@ -1,5 +1,7 @@
-import {compose} from 'ramda'
+import {compose, curry} from 'ramda'
 import Immutable from 'immutable'
+import flyd from 'flyd'
+
 
 const getScreen = id => {
     let canvas = document.getElementById(id)
@@ -45,10 +47,10 @@ const player = {
 
 const game = {
  init:() => Immutable.fromJS(player),
- update: state => action => {
+ update: curry((player ,action) => {
      //first verision any acction move down
-     return state.updateIn(['position', 'y'], v=> v + 1)
- }   
+     return player.updateIn(['position', 'y'], v=> v + 1)
+ })   
 }
   
 var screen = getScreen('screen')
@@ -56,15 +58,25 @@ var init = compose(drawPiece('red')(player), clear, scale)
 var draw = compose(drawPiece('red')(player), clear)
 
 var update = ()=>{
-    draw(screen)
+    //draw(screen)
     //player.position.y++
     requestAnimationFrame(update)
 }
 
 init(screen)
-update()
+//update()
 
 //test inmutable state
-var  state =  game.init()
-var nextState= game.update(state)('algo') 
-console.log(nextState.toJS())
+// var  state =  game.init()
+// var nextState= game.update(state)('_') 
+// console.log(nextState.toJS())
+
+var actions$=flyd.stream()
+var player$=flyd.scan(game.update,game.init(), actions$)
+flyd.on(
+    player=>{
+        clear(screen)
+        drawPiece('red')(player.toJS())(screen)
+    },
+    player$)
+actions$('_')('_')
