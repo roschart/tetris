@@ -85,9 +85,10 @@ actions$('_')('_')
 
 
 window.addEventListener('keydown', (e)=>{
+    e.preventDefault()
     if(e.keyCode===37) { actions$('left') }
     else if (e.keyCode===39) { actions$('right') }
     else if (e.keyCode===40) { actions$('down') }
-})
+},false)
 
 setInterval(()=>{actions$('down')}, 1000)
