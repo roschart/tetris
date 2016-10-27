@@ -46,11 +46,19 @@ const player = {
 }
 
 const game = {
- init:() => Immutable.fromJS(player),
- update: curry((player ,action) => {
-     //first verision any acction move down
-     return player.updateIn(['position', 'y'], v=> v + 1)
- })   
+    init:() => Immutable.fromJS(player),
+    update: curry((player ,action) => {
+        if(action==='left'){
+            return player.updateIn(['position', 'x'], v=> v - 1)
+        }
+        else if(action==='right'){
+            return player.updateIn(['position', 'x'], v=> v + 1)
+        }
+        else if(action==='down'){
+            return player.updateIn(['position', 'y'], v=> v + 1)
+        }
+        return player
+    })
 }
   
 var screen = getScreen('screen')
@@ -65,12 +73,6 @@ var update = ()=>{
 
 init(screen)
 //update()
-
-//test inmutable state
-// var  state =  game.init()
-// var nextState= game.update(state)('_') 
-// console.log(nextState.toJS())
-
 var actions$=flyd.stream()
 var player$=flyd.scan(game.update,game.init(), actions$)
 flyd.on(
@@ -79,4 +81,11 @@ flyd.on(
         drawPiece('red')(player.toJS())(screen)
     },
     player$)
-actions$('_')('_')
+actions$('_')('_')  
+
+
+window.addEventListener('keydown', (e)=>{
+    if(e.keyCode===37) { actions$('left') }
+    else if (e.keyCode===39) { actions$('right') }
+    else if (e.keyCode===40) { actions$('down') }
+})
